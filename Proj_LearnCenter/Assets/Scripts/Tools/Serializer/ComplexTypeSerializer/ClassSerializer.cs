@@ -62,17 +62,21 @@ namespace ZSerializer
                 try
                 {
                     BinaryReader reader = new BinaryReader(stream);
-                    int size = Serializer.Read<int>(reader);
                     Dictionary<string, PropertyInfo> dicInfos = new Dictionary<string, PropertyInfo>();
                     while(!reader.IsReadOver())
                     {
                         PropertyInfo info = new PropertyInfo();
-                        byte keyLength = Serializer.Read<byte>(reader);
-                        byte[] keyBuffer = new byte[keyLength];
-                        reader.Read(keyBuffer, 0, keyLength);
+                        object keyLength = 0;
+                        Serializer.Read(reader, typeof(byte), ref keyLength);
+                        byte[] keyBuffer = new byte[(byte)keyLength];
+                        reader.Read(keyBuffer, 0, (byte)keyLength);
                         info.key = keyBuffer.ToUTF8String();
-                        info.typeCode = Serializer.Read<byte>(reader);
-                        int valLength = Serializer.Read<int>(reader);
+                        object typeCodeO = SerializeType.st_error;
+                        Serializer.Read(reader,typeof(byte),ref typeCodeO);
+                        info.typeCode = (byte)typeCodeO;
+                        object valLengthO = 0;
+                        Serializer.Read(reader,typeof(int),ref valLengthO);
+                        int valLength = (int)valLengthO;
                         info.valBuffer = new byte[valLength];
                         reader.Read(info.valBuffer,0,valLength);
                         dicInfos.Add(info.key,info);
@@ -83,8 +87,8 @@ namespace ZSerializer
                     {
                         if(dicInfos.ContainsKey(field.Name))
                         {
-                            object obj;
-                            Serializer.DeSerialize(dicInfos[field.Name].valBuffer,field.FieldType,out obj);
+                            object obj = Activator.CreateInstance(field.FieldType);
+                            Serializer.DeSerialize(dicInfos[field.Name].valBuffer, field.FieldType, ref obj);
                             field.SetValue(res, obj);
                         }                       
                     }

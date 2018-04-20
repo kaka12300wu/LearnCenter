@@ -65,98 +65,109 @@
                     }
                 case SerializeType.st_array:
                     {
-                        return ((Array)Convert.ChangeType(arg, typeof(Array))).ToBytes();
+                        Array obj = (Array)arg;
+                        return obj.ToBytes();
                     }
             }
             return default(byte[]);
         }
 
-        public static byte[] GetBytes<T>(T[] arg)
+        public static void Read(BinaryReader reader,Type type,ref object obj)
         {
-            return ComplexSerializer.ArrayToBytes<T>(arg);
-        }
-
-        public static T Read<T>(BinaryReader reader)
-        {
-            Type type = typeof(T);
             byte typeCode = SerializeType.GetSerializeType(type);
             switch (typeCode)
             {
                 case SerializeType.st_bool:
                     {
-                        return (T)Convert.ChangeType(reader.ReadBoolean(), type);
+                        obj = Convert.ChangeType(reader.ReadBoolean(), type);
                     }
+                    break;
                 case SerializeType.st_byte:
                     {
-                        return (T)Convert.ChangeType(reader.ReadByte(), type);
+                        obj = Convert.ChangeType(reader.ReadByte(), type);
                     }
+                    break;
                 case SerializeType.st_char:
                     {
-                        return (T)Convert.ChangeType(reader.ReadChar(), type);
-                    }
+                        obj = Convert.ChangeType(reader.ReadChar(), type);
+                    } 
+                    break;
                 case SerializeType.st_float:
                     {
-                        return (T)Convert.ChangeType(reader.ReadSingle(), type);
-                    }
+                        obj = Convert.ChangeType(reader.ReadSingle(), type);
+                    } 
+                    break;
                 case SerializeType.st_double:
                     {
-                        return (T)Convert.ChangeType(reader.ReadDouble(), type);
-                    }
+                        obj = Convert.ChangeType(reader.ReadDouble(), type);
+                    } 
+                    break;
                 case SerializeType.st_short:
                     {
-                        return (T)Convert.ChangeType(reader.ReadInt16(), type);
-                    }
+                        obj = Convert.ChangeType(reader.ReadInt16(), type);
+                    } 
+                    break;
                 case SerializeType.st_ushort:
                     {
-                        return (T)Convert.ChangeType(reader.ReadUInt16(), type);
-                    }
+                        obj = Convert.ChangeType(reader.ReadUInt16(), type);
+                    } 
+                    break;
                 case SerializeType.st_int:
                     {
-                        return (T)Convert.ChangeType(reader.ReadInt32(), type);
-                    }
+                        obj = Convert.ChangeType(reader.ReadInt32(), type);
+                    } 
+                    break;
                 case SerializeType.st_uint:
                     {
-                        return (T)Convert.ChangeType(reader.ReadUInt32(), type);
-                    }
+                        obj = Convert.ChangeType(reader.ReadUInt32(), type);
+                    } 
+                    break;
                 case SerializeType.st_long:
                     {
-                        return (T)Convert.ChangeType(reader.ReadInt64(), type);
-                    }
+                        obj = Convert.ChangeType(reader.ReadInt64(), type);
+                    } 
+                    break;
                 case SerializeType.st_ulong:
                     {
-                        return (T)Convert.ChangeType(reader.ReadUInt64(), type);
-                    }
+                        obj = Convert.ChangeType(reader.ReadUInt64(), type);
+                    } 
+                    break;
                 case SerializeType.st_string:
                     {
                         int length = reader.ReadInt32();
                         byte[] buffer = new byte[length];
                         reader.Read(buffer, 0, length);
-                        return (T)Convert.ChangeType(buffer.ToUTF8String(), type);
-                    }
+                        obj = Convert.ChangeType(buffer.ToUTF8String(), type);
+                    } 
+                    break;
                 case SerializeType.st_class:
                     {
                         int size = reader.ReadInt32();
                         byte[] buffer = new byte[size];
                         reader.Read(buffer, 0, size);
-                        List<byte> list = new List<byte>(size.ToBytes());
-                        list.AddRange(buffer);
-                        Object obj = Activator.CreateInstance(typeof(T));
-                        ComplexSerializer.BytesToClass(list.ToArray(), ref obj);
-                        return (T)obj;
+                        ComplexSerializer.BytesToClass(buffer, ref obj);
+                    } 
+                    break;
+                case SerializeType.st_array:
+                    {
+                        int length = reader.ReadInt32();
+                        byte[] buffer = new byte[length];
+                        reader.Read(buffer,0,length);                        
+                        obj = ComplexSerializer.BytesToArray(buffer);
                     }
+                    break;
             }
-            return default(T);
         }
 
         public static T DeSerialize<T>(byte[] buffer)
         {
             Type type = typeof(T);
-            object obj;
-            DeSerialize(buffer, type, out obj);
-            return (T)obj;
+            object obj = default(object);
+            DeSerialize(buffer, type, ref obj);
+            return (T)Convert.ChangeType(obj,type);
         }
 
-        public static void DeSerialize(byte[] buffer,Type type,out object obj)
+        public static void DeSerialize(byte[] buffer,Type type,ref object obj)
         {
             byte typeCode = SerializeType.GetSerializeType(type);
             switch (typeCode)
@@ -223,21 +234,17 @@
                     break;
                 case SerializeType.st_class:
                     {
-                        obj = Activator.CreateInstance(type);
                         ComplexSerializer.BytesToClass(buffer,ref obj);
-                        break;
                     }
-                default:
+                    break;
+                case SerializeType.st_array:
                     {
-                        obj = Activator.CreateInstance(type);
+                        byte[] realBuffer = new byte[buffer.Length - sizeof(int)];
+                        Array.Copy(buffer,sizeof(int),realBuffer,0,realBuffer.Length);
+                        obj = ComplexSerializer.BytesToArray(realBuffer);
                     }
                     break;
             }
-        }
-        
-        public static T[] DeSerializeArray<T>(byte[] buffer)
-        {
-            return ComplexSerializer.BytesToArrat<T>(buffer);
-        }
+        }        
     }
 }

@@ -75,6 +75,42 @@
             return GetSerializeType(obj.GetType());            
         }
 
+        public static Type TypeCodeToType(byte typeCode)
+        {
+            switch (typeCode)
+            {
+                case SerializeType.st_bool:
+                    return typeof(bool);
+                case SerializeType.st_byte:
+                    return typeof(byte);
+                case SerializeType.st_char:
+                    return typeof(char);
+                case SerializeType.st_float:
+                    return typeof(float);
+                case SerializeType.st_double:
+                    return typeof(double);
+                case SerializeType.st_short:
+                    return typeof(short);
+                case SerializeType.st_ushort:
+                    return typeof(ushort);
+                case SerializeType.st_int:
+                    return typeof(int);
+                case SerializeType.st_uint:
+                    return typeof(uint);
+                case SerializeType.st_long:
+                    return typeof(long);
+                case SerializeType.st_ulong:
+                    return typeof(ulong);
+                case SerializeType.st_string:
+                    return typeof(string);
+                case SerializeType.st_class:
+                    return typeof(SerializeBase);
+                case SerializeType.st_array:
+                    return typeof(Array);
+            }            
+            return typeof(SeriaLizeError);
+        }
+
         public static bool IsSimple(Type type)
         {
             if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>))

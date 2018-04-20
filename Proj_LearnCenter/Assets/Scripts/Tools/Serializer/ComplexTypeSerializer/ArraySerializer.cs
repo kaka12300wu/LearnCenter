@@ -6,108 +6,133 @@ namespace ZSerializer
     using System.Collections.Generic;
     internal static partial class ComplexSerializer
     {
+        static void GetPosition(int pos, int dimension, List<int> storedPos, byte[] dimensions, List<List<int>> ret)
+        {
+            List<int> dimesionPosList = new List<int>(storedPos.ToArray());
+            dimesionPosList.Add(pos);
+            if (dimension + 1 == dimensions.Length - 1)
+            {
+                for (int j = 0; j < dimensions[dimension + 1]; ++j)
+                {
+                    List<int> endPosList = new List<int>(dimesionPosList.ToArray());
+                    endPosList.Add(j);
+                    ret.Add(endPosList);
+                }
+            }
+            else
+            {
+                for (int s = 0; s < dimensions[dimension + 1]; ++s)
+                {
+                    GetPosition(s, dimension + 1, dimesionPosList, dimensions, ret);
+                }
+            }
+        }
+
+        static List<List<int>> GetArrayPositions(Array arg,out byte[] dimensions)
+        {
+            List<List<int>> ret = new List<List<int>>();
+            int rank = arg.Rank;
+            dimensions = new byte[rank];
+            for (int i = 0; i < rank; ++i)
+            {
+                dimensions[i] = (byte)arg.GetLength(i);
+            }
+
+            List<int> posList;
+            for (int i = 0; i < dimensions[0]; ++i)
+            {
+                posList = new List<int>();
+                GetPosition(i, 0, posList, dimensions, ret);
+            }
+
+            return ret;
+        }
+
         public static byte[] ToBytes(this Array arg)
         {
-            int rank = arg.Rank;
-            List<List<int>> keysList = new List<List<int>>();
-            
-            Action<int> doAddDimension = (leng) =>
-            {
-                int pos = 0;
-                for(int i = 0,max = keysList.Count;i<max;++i)
-                {
-                    if (pos >= leng)
-                        pos++;
-                    keysList[i].Add(pos);
-                }
-            };
-
-
-            for (int i = 0, max = arg.Length; i < max; ++i)
-            {
-                keysList.Add(new List<int>());
-            }
-
-            for (int i = 0; i < rank;++i)
-            {
-                int dimensionLeng = arg.GetLength(i);
-                for (int j = 0; j < dimensionLeng;++j)
-                {
-                    doAddDimension(dimensionLeng);
-                }                    
-            }
-
-            System.Text.StringBuilder sbuilder = new System.Text.StringBuilder();
-            foreach(List<int> list in keysList)
-            {
-                sbuilder.Remove(0, sbuilder.Length);
-                for(int i = 0,max = list.Count;i<max;++i)
-                {
-                    sbuilder.Append(i + "-"); 
-                }
-                sbuilder.Remove(sbuilder.Length - 1,1);
-                GLog.Log(sbuilder.ToString());
-            }
-
-            return default(byte[]);
-        }
-        
-        public static byte[] ArrayToBytes<T>(T[] arg)
-        {
-            byte typeCode = SerializeType.GetSerializeType(typeof(T));
-            if(typeCode == SerializeType.st_array)
-            {
-                throw new Exception("Can not serialize multi dimensional array");
-            }
-
             List<byte> list = new List<byte>();
-            bool isSimple = SerializeType.IsSimple(typeof(T));
-            for(int i = 0,max = arg.Length;i<max;++i)
+            int rank = arg.Rank;
+            list.AddRange(Serializer.GetBytes((byte)rank));
+            byte typeCode = SerializeType.GetSerializeType(arg.GetType().GetElementType());
+            list.AddRange(Serializer.GetBytes(typeCode));
+            if (rank == 1)
             {
-                if (isSimple)
+                for (int i = 0, max = arg.Length; i < max; ++i)
                 {
-                    list.AddRange(Serializer.GetBytes(arg[i]));
-                }
-                else if (typeCode == SerializeType.st_class)
-                {
-                    list.AddRange(ClassToBytes(arg[i]));
+                    list.AddRange(Serializer.GetBytes(arg.GetValue(i)));
                 }
             }
+            else
+            {
+                byte[] dimensions;
+                List<List<int>> keysList = GetArrayPositions(arg,out dimensions);
+                list.AddRange(dimensions.ToBytes());
+                foreach(List<int> l in keysList)
+                {
+                    list.AddRange(l.ToArray().ToBytes());
+                    list.AddRange(Serializer.GetBytes(arg.GetValue(l.ToArray())));
+                }
+            }
+
+            list.InsertRange(0,list.Count.ToBytes());
             return list.ToArray();
         }
 
-        public static T[] BytesToArrat<T>(byte[] buffer)
+        public static Array BytesToArray(byte[] buffer)
         {
-            List<T> list = new List<T>();
-            byte typeCode = SerializeType.GetSerializeType(typeof(T));            
-            using(MemoryStream stream = new MemoryStream(buffer))
+            using (MemoryStream stream = new MemoryStream(buffer))
             {
                 BinaryReader reader = new BinaryReader(stream);
-                if(SerializeType.IsSimple(typeof(T)) || typeCode == SerializeType.st_class)
+                Array arg;
+                try
                 {
-                    try
+                    int rank = reader.ReadByte();
+                    byte typeCode = reader.ReadByte();
+                    Type type = SerializeType.TypeCodeToType(typeCode);
+                    if (rank == 1)
                     {
-                        T obj = Serializer.Read<T>(reader);
-                        while (true)
+                        List<object> list = new List<object>();
+                        while (!reader.IsReadOver())
                         {
+                            object obj = default(object);
+                            Serializer.Read(reader, type, ref obj);
                             list.Add(obj);
-                            if (reader.IsReadOver())
-                                break;
-                            obj = Serializer.Read<T>(reader);
+                        }
+                        arg = (Array)list.ToArray();
+                    }
+                    else
+                    {
+                        object dimensionO = default(object);
+                        Serializer.Read(reader, typeof(Array), ref dimensionO);
+                        byte[] dimensions = (byte[])dimensionO;
+                        long[] tempDimensions = new long[dimensions.Length];
+                        for (int i = 0, max = dimensions.Length; i < max;++i)
+                        {
+                            tempDimensions[i] = (long)dimensions[i];
+                        }
+                        arg = Array.CreateInstance(type, tempDimensions);
+                        while (!reader.IsReadOver())
+                        {
+                            object obj = default(object);
+                            Serializer.Read(reader,typeof(Array),ref obj);
+                            int[] posIndex = (int[])obj;
+                            obj = default(object);
+                            Serializer.Read(reader, type, ref obj);
+                            arg.SetValue(obj,posIndex);
                         }
                     }
-                    catch(Exception e)
-                    {
-                        GLog.LogError(e.ToString());
-                    }
+                    return arg;
                 }
-                else
+                catch(Exception e)
                 {
-
+                    GLog.Log(e.ToString());
+                }   
+                finally
+                {
+                    reader.Close();
                 }
-                reader.Close();
-            };
-            return list.ToArray();
+                return null;
+            }
         }
     }
 }

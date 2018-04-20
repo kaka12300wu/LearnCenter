@@ -8,10 +8,15 @@ public class Entry : MonoBehaviour
 	void Awake ()
 	{
         GLog.Init();
-        bool[,] arr = new bool[3,2];
-        arr.Initialize();
-        arr.ToBytes();
-        
+        int[]  arg = new int[6]{2,4,6,8,10,12};
+        byte[] buffer = Serializer.GetBytes(arg);
+        object obj = default(object);
+        Serializer.DeSerialize(buffer, typeof(int[]), ref obj);
+        int[] deArg = (int[])(Array)obj;
+        foreach(int a in deArg)
+        {
+            Debug.Log(a);
+        }
 	}
 
     
