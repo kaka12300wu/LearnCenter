@@ -98,7 +98,11 @@ namespace ZSerializer
                             Serializer.Read(reader, type, ref obj);
                             list.Add(obj);
                         }
-                        arg = (Array)list.ToArray();
+                        arg = Array.CreateInstance(type, list.Count);
+                        for(int i = 0,max = list.Count;i<max;++i)
+                        {
+                            arg.SetValue(list[i], i);
+                        }
                     }
                     else
                     {

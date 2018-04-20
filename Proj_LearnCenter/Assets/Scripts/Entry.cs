@@ -12,7 +12,7 @@ public class Entry : MonoBehaviour
         byte[] buffer = Serializer.GetBytes(arg);
         object obj = default(object);
         Serializer.DeSerialize(buffer, typeof(int[]), ref obj);
-        int[] deArg = (int[])(Array)obj;
+        int[] deArg = obj as int[];
         foreach(int a in deArg)
         {
             Debug.Log(a);
