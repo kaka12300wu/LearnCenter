@@ -51,6 +51,8 @@ public class GLog : MonoBehaviour
     static bool b_init = false;
     static string logFilePath;
 
+    public static event Action<LogItem> OnNewLogAdd;
+
     void Awake()
     {
         SingletonObject.getInstance<GLog>(this);
@@ -120,6 +122,8 @@ public class GLog : MonoBehaviour
         logList.Add(item);
         if (logList.Count >= 1000)
             logList.RemoveAt(0);
+        if (null != OnNewLogAdd)
+            OnNewLogAdd.Invoke(item);
     }
 
     public static void Log(string msg)
