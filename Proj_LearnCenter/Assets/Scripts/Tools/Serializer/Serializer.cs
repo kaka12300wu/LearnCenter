@@ -68,6 +68,10 @@
                         Array obj = (Array)arg;
                         return obj.ToBytes();
                     }
+                case SerializeType.st_dictionary:
+                    {
+                        return ComplexSerializer.DicToBytes(arg);
+                    }
             }
             return default(byte[]);
         }
@@ -145,7 +149,8 @@
                         int size = reader.ReadInt32();
                         byte[] buffer = new byte[size];
                         reader.Read(buffer, 0, size);
-                        ComplexSerializer.BytesToClass(buffer, ref obj);
+                        obj = Activator.CreateInstance(type);
+                        ComplexSerializer.BytesToClass(buffer,type,ref obj);
                     } 
                     break;
                 case SerializeType.st_array:
@@ -153,7 +158,7 @@
                         int length = reader.ReadInt32();
                         byte[] buffer = new byte[length];
                         reader.Read(buffer,0,length);                        
-                        obj = ComplexSerializer.BytesToArray(buffer);
+                        obj = ComplexSerializer.BytesToArray(buffer,type.GetElementType());
                     }
                     break;
             }
@@ -234,14 +239,16 @@
                     break;
                 case SerializeType.st_class:
                     {
-                        ComplexSerializer.BytesToClass(buffer,ref obj);
+                        byte[] realBuffer = new byte[buffer.Length - sizeof(int)];
+                        Array.Copy(buffer, sizeof(int), realBuffer, 0, realBuffer.Length);
+                        ComplexSerializer.BytesToClass(realBuffer, type, ref obj);
                     }
                     break;
                 case SerializeType.st_array:
                     {
                         byte[] realBuffer = new byte[buffer.Length - sizeof(int)];
                         Array.Copy(buffer,sizeof(int),realBuffer,0,realBuffer.Length);
-                        obj = ComplexSerializer.BytesToArray(realBuffer);
+                        obj = ComplexSerializer.BytesToArray(realBuffer,type.GetElementType());
                     }
                     break;
             }

@@ -1,8 +1,9 @@
 ﻿using System;
 using UnityEngine;
+using ZSerializer;
 
 [Serializable]
-public class Person
+public class Person : SerializeBase
 {
 	public ZVector3 pos;
 	public int lv;
@@ -25,11 +26,11 @@ public class Person
 }
 
 [Serializable]
-public class ZVector3
+public class ZVector3 : SerializeBase
 {
 	public float x;
 	public float y;
-	public float z;
+    public float z;
 
 	public ZVector3 ()
 	{
@@ -39,19 +40,19 @@ public class ZVector3
 	{
 		x = v.x;
 		y = v.y;
-		z = v.z;
+        z = v.z;
 	}
 
 	public ZVector3 (float _x, float _y, float _z)
 	{
 		x = _x;
 		y = _y;
-		z = _z;
+        z = _z;
 	}
 
 	public Vector3 ToVector3 ()
 	{
-		return new Vector3 (x, y, z);
+		return new Vector3(x, y, z);
 	}
 
 	public override string ToString ()

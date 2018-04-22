@@ -1,6 +1,10 @@
 ﻿using System;
 using UnityEngine;
 using ZSerializer;
+using System.Collections.Generic;
+
+using Random = UnityEngine.Random;
+
 public class Entry : MonoBehaviour
 {
 
@@ -8,14 +12,37 @@ public class Entry : MonoBehaviour
 	void Awake ()
 	{
         GLog.Init();
-        int[]  arg = new int[6]{2,4,6,8,10,12};
-        byte[] buffer = Serializer.GetBytes(arg);
-        object obj = default(object);
-        Serializer.DeSerialize(buffer, typeof(int[]), ref obj);
-        int[] deArg = obj as int[];
-        foreach(int a in deArg)
+        ZVector3[, ,] arg = new ZVector3[3, 3, 3];
+
+        for (int i = 0; i < 3; ++i)
         {
-            Debug.Log(a);
+            for (int j = 0; j < 3; ++j)
+            {
+                for (int s = 0; s < 3; ++s)
+                {
+                    arg[i, j, s] = new ZVector3(Random.Range(i, (i + 5) * 15), Random.Range(j, (j + 5) * 15), Random.Range(i + j, (i + j + 5) * 15));
+                }
+            }
+        }
+        byte[] buffer = Serializer.GetBytes(arg);
+
+        //SingletonObject.getInstance<FileHelper>().SaveFile(Application.persistentDataPath + "/Tmp/Serialization/27ZVector3.dno", buffer);
+        //buffer = SingletonObject.getInstance<FileHelper>().ReadFile(Application.persistentDataPath + "/Tmp/Serialization/27ZVector3.dno");
+        
+        GLog.Log(buffer.Length.ToString());
+        ZVector3[, ,] deArg = Serializer.DeSerialize<ZVector3[, ,]>(buffer);
+        int leng1 = deArg.GetLength(0);
+        int leng2 = deArg.GetLength(1);
+        int leng3 = deArg.GetLength(2);
+        for (int i = 0; i < leng1; ++i)
+        {
+            for (int j = 0; j < leng2; ++j)
+            {
+                for (int s = 0; s < leng3; ++s)
+                {
+                    GLog.Log(string.Format("[{0},{1},{2}]={3}", i, j, s, deArg[i, j, s].ToString()));
+                }
+            }
         }
 	}
 

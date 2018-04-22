@@ -53,8 +53,6 @@ namespace ZSerializer
             List<byte> list = new List<byte>();
             int rank = arg.Rank;
             list.AddRange(Serializer.GetBytes((byte)rank));
-            byte typeCode = SerializeType.GetSerializeType(arg.GetType().GetElementType());
-            list.AddRange(Serializer.GetBytes(typeCode));
             if (rank == 1)
             {
                 for (int i = 0, max = arg.Length; i < max; ++i)
@@ -78,7 +76,7 @@ namespace ZSerializer
             return list.ToArray();
         }
 
-        public static Array BytesToArray(byte[] buffer)
+        public static Array BytesToArray(byte[] buffer,Type elemType)
         {
             using (MemoryStream stream = new MemoryStream(buffer))
             {
@@ -86,19 +84,17 @@ namespace ZSerializer
                 Array arg;
                 try
                 {
-                    int rank = reader.ReadByte();
-                    byte typeCode = reader.ReadByte();
-                    Type type = SerializeType.TypeCodeToType(typeCode);
+                    int rank = reader.ReadByte();                    
                     if (rank == 1)
                     {
                         List<object> list = new List<object>();
                         while (!reader.IsReadOver())
                         {
                             object obj = default(object);
-                            Serializer.Read(reader, type, ref obj);
+                            Serializer.Read(reader, elemType, ref obj);
                             list.Add(obj);
                         }
-                        arg = Array.CreateInstance(type, list.Count);
+                        arg = Array.CreateInstance(elemType, list.Count);
                         for(int i = 0,max = list.Count;i<max;++i)
                         {
                             arg.SetValue(list[i], i);
@@ -107,21 +103,21 @@ namespace ZSerializer
                     else
                     {
                         object dimensionO = default(object);
-                        Serializer.Read(reader, typeof(Array), ref dimensionO);
+                        Serializer.Read(reader, typeof(byte[]), ref dimensionO);
                         byte[] dimensions = (byte[])dimensionO;
                         long[] tempDimensions = new long[dimensions.Length];
                         for (int i = 0, max = dimensions.Length; i < max;++i)
                         {
                             tempDimensions[i] = (long)dimensions[i];
                         }
-                        arg = Array.CreateInstance(type, tempDimensions);
+                        arg = Array.CreateInstance(elemType, tempDimensions);
                         while (!reader.IsReadOver())
                         {
                             object obj = default(object);
-                            Serializer.Read(reader,typeof(Array),ref obj);
+                            Serializer.Read(reader,typeof(int[]),ref obj);
                             int[] posIndex = (int[])obj;
                             obj = default(object);
-                            Serializer.Read(reader, type, ref obj);
+                            Serializer.Read(reader, elemType, ref obj);
                             arg.SetValue(obj,posIndex);
                         }
                     }

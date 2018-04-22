@@ -8,7 +8,7 @@ public class FileHelper
 {
     public byte[] ReadFile(string path)
     {
-        if (!File.Exists(path))
+        if (string.IsNullOrEmpty(path) || !File.Exists(path))
             return default(byte[]);
         using (FileStream fStream = new FileStream(path, FileMode.Open))
         {
@@ -24,6 +24,7 @@ public class FileHelper
     {
         try
         {
+            EnsureDirectory(path);
             using (FileStream fStream = new FileStream(path, FileMode.Create))
             {
                 fStream.Write(buffer,0,buffer.Length);
@@ -36,5 +37,25 @@ public class FileHelper
             Debug.LogError(e.ToString());
             return false;
         }
+    }
+
+    bool EnsureDirectory(string path)
+    {
+        try
+        {
+            path.Replace("\\","/");
+            if (path.Contains("."))
+            {
+                path = path.Substring(0, path.LastIndexOf("/") + 1);
+            }
+            if (!Directory.Exists(path))
+                Directory.CreateDirectory(path);
+            return true;
+        }
+        catch(Exception e)
+        {
+            GLog.LogError(e.ToString());
+        }
+        return false;
     }
 }

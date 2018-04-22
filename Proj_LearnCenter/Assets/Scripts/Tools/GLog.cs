@@ -16,8 +16,6 @@ using System.IO;
 using System.Text;
 #endif
 
-
-
 public class GLog : MonoBehaviour
 {
 #if LOG_ON 
@@ -56,6 +54,18 @@ public class GLog : MonoBehaviour
     void Awake()
     {
         SingletonObject.getInstance<GLog>(this);
+#if UNITY_MOBILE
+        Application.logMessageReceived += (string condition, string stackTrace, LogType type) =>
+        {
+            string msg = string.Format("{0}\n{1}", condition, stackTrace);
+            if (type == LogType.Log)
+                Log(msg);
+            else if (type == LogType.Warning)
+                LogWarning(msg);
+            else if (type == LogType.Error)
+                LogError(msg);
+        };
+#endif
     }
     
     public static void Init()

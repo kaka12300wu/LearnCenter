@@ -7,14 +7,14 @@ namespace ZSerializer
 
     internal static partial class ComplexSerializer
     {
-        static List<PropertyInfo> GetObjectPropertyInfos(Object obj)
+        static List<LeaguerInfo> GetObjectPropertyInfos(Object obj)
         {
-            List<PropertyInfo> list = new List<PropertyInfo>();
+            List<LeaguerInfo> list = new List<LeaguerInfo>();
             Type type = obj.GetType();
             FieldInfo[] fileds = type.GetFields(BindingFlags.Instance | BindingFlags.Public);
             foreach(FieldInfo info in fileds)
             {
-                PropertyInfo pro = new PropertyInfo();
+                LeaguerInfo pro = new LeaguerInfo();
                 pro.key = info.Name;
                 object val = info.GetValue(obj);
                 pro.typeCode = SerializeType.GetSerializeType(val.GetType());
@@ -31,9 +31,14 @@ namespace ZSerializer
             {
                 throw new Exception("ClassToBytes must get arguments with typeof class!");
             }
-            List<PropertyInfo> list = GetObjectPropertyInfos(arg);
+            if (!arg.GetType().IsSubclassOf(typeof(SerializeBase)))
+            {
+                throw new Exception("ClassToBytes must get subclass of SerializeBase!");
+            }
+
+            List<LeaguerInfo> list = GetObjectPropertyInfos(arg);
             List<byte> res = new List<byte>();
-            foreach(PropertyInfo info in list)
+            foreach(LeaguerInfo info in list)
             {
                 res.AddRange(info.key.ToKeyBytes());
                 res.AddRange(info.typeCode.ToBytes());
@@ -44,28 +49,28 @@ namespace ZSerializer
             return res.ToArray();
         }
 
-        internal static bool IsReadOver(this BinaryReader reader)
+        public static void BytesToClass(byte[] buffer,Type type,ref Object res)
         {
-            return reader.BaseStream.Position >= reader.BaseStream.Length;
-        }
-
-        public static void BytesToClass(byte[] buffer,ref Object res)
-        {
-            byte typeCode = SerializeType.GetSerializeType(res.GetType());
+            if (!type.IsSubclassOf(typeof(SerializeBase)))
+            {
+                throw new Exception("ClassToBytes must get subclass of SerializeBase!");
+            }
+            byte typeCode = SerializeType.GetSerializeType(type);
             if(typeCode != SerializeType.st_class)
             {
-                throw new Exception("Wrong call BytesToClass of:" + res.GetType().ToString());
+                throw new Exception("Wrong call BytesToClass of:" + type.ToString());
             }
 
             using(MemoryStream stream = new MemoryStream(buffer))
             {
                 try
                 {
+                    res = Activator.CreateInstance(type);
                     BinaryReader reader = new BinaryReader(stream);
-                    Dictionary<string, PropertyInfo> dicInfos = new Dictionary<string, PropertyInfo>();
+                    Dictionary<string, LeaguerInfo> dicInfos = new Dictionary<string, LeaguerInfo>();
                     while(!reader.IsReadOver())
                     {
-                        PropertyInfo info = new PropertyInfo();
+                        LeaguerInfo info = new LeaguerInfo();
                         object keyLength = 0;
                         Serializer.Read(reader, typeof(byte), ref keyLength);
                         byte[] keyBuffer = new byte[(byte)keyLength];
@@ -101,7 +106,7 @@ namespace ZSerializer
         }
     }
 
-    internal class PropertyInfo
+    internal class LeaguerInfo
     {
         public string key;
         public byte typeCode;
