@@ -18,7 +18,7 @@ using System.Text;
 
 public class GLog : MonoBehaviour
 {
-#if LOG_ON 
+
     public class LogItem
     {
         public string msg;
@@ -55,6 +55,7 @@ public class GLog : MonoBehaviour
 
     void Awake()
     {
+#if LOG_ON
         SingletonObject.getInstance<GLog>(this);
 #if UNITY_MOBILE
         Application.logMessageReceived += (string condition, string stackTrace, LogType type) =>
@@ -68,12 +69,14 @@ public class GLog : MonoBehaviour
                 LogError(msg);
         };
 #endif
+#endif
     }
     
     public static void Init()
     {
         if (b_init)
             return;
+#if LOG_ON
 #if DEBUG_VERSION
         GameObject o = Resources.Load<GameObject>("DebugHelper");
         GameObject.Instantiate<GameObject>(o).name = o.name;
@@ -88,6 +91,8 @@ public class GLog : MonoBehaviour
         f_stream.Close();
 #endif
         b_init = true;
+
+#endif
     }
 
     static string GetStackTraceModelName()
@@ -128,6 +133,7 @@ public class GLog : MonoBehaviour
 
     public static void Log(string msg)
     {
+#if LOG_ON
 #if UNITY_MOBILE
         LogItem item = new LogItem();
         item.msg = msg;
@@ -138,10 +144,12 @@ public class GLog : MonoBehaviour
 #else
         Debug.Log(msg);
 #endif
+#endif
     }
 
     public static void LogWarning(string msg)
     {
+#if LOG_ON
 #if UNITY_MOBILE
         LogItem item = new LogItem();
         item.msg = msg;
@@ -152,10 +160,12 @@ public class GLog : MonoBehaviour
 #else
         Debug.LogWarning(msg);
 #endif
+#endif
     }
 
     public static void LogError(string msg)
     {
+#if LOG_ON
 #if UNITY_MOBILE
         LogItem item = new LogItem();
         item.msg = msg;
@@ -165,6 +175,7 @@ public class GLog : MonoBehaviour
         AddLogItem(item);
 #else
         Debug.LogError(msg);
+#endif
 #endif
     }
 
@@ -182,5 +193,9 @@ public class GLog : MonoBehaviour
 #endif
     }
 
-#endif
+    public static List<LogItem> GetLogInfosList()
+    {
+        return logList;
+    }
+
 }

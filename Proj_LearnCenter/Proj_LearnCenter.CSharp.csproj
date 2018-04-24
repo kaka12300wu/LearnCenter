@@ -91,6 +91,7 @@
   <ItemGroup>
     <Compile Include="Assets\Scripts\Core\DebugHelpeTools\DebugPanelManager.cs" />
     <Compile Include="Assets\Scripts\Core\DebugHelpeTools\GLog.cs" />
+    <Compile Include="Assets\Scripts\Core\DebugHelpeTools\LogInfosPanel.cs" />
     <Compile Include="Assets\Scripts\Core\Serializer\BuildInTypeSerializer\BooleanSerializer.cs" />
     <Compile Include="Assets\Scripts\Core\Serializer\BuildInTypeSerializer\ByteSerializer.cs" />
     <Compile Include="Assets\Scripts\Core\Serializer\BuildInTypeSerializer\CharSerializer.cs" />
