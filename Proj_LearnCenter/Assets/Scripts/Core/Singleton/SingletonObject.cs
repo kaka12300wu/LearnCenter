@@ -31,12 +31,12 @@ public class SingletonObject : MonoBehaviour
     {
         if (m_IsDestroying)
         {
-            Debug.LogWarning ("SingletonObject is mark as Destroy! Can not get instance any more!");
+            GLog.LogWarning("SingletonObject is mark as Destroy! Can not get instance any more!");
             return null;
         }
         if (m_Container == null)
         {
-            Debug.Log ("Create Singleton.");
+            GLog.Log("Create Singleton.");
             m_Container = new GameObject ();
             m_Container.name = m_Name;
             m_Container.AddComponent (typeof (SingletonObject));
@@ -75,7 +75,7 @@ public class SingletonObject : MonoBehaviour
             }
             else
             {
-                Debug.LogWarning ("Singleton Type ERROR! (" + name + ")");
+                GLog.LogWarning("Singleton Type ERROR! (" + name + ")");
             }
         }
         return m_SingletonMap[name] as T;
@@ -94,19 +94,19 @@ public class SingletonObject : MonoBehaviour
                 UnityEngine.Object.Destroy (m_SingletonMap[name] as UnityEngine.Component);
             }
             m_SingletonMap.Remove (name);
-            Debug.LogWarning ("Singleton REMOVE! (" + name + ")");
+            GLog.LogWarning("Singleton REMOVE! (" + name + ")");
         }
     }
 
     void Awake ()
     {
-        Debug.Log ("Awake Singleton.");
+        GLog.Log ("Awake Singleton.");
         DontDestroyOnLoad (gameObject);
     }
 
     void OnApplicationQuit ()
     {
-        Debug.Log ("Destroy Singleton");
+        GLog.Log("Destroy Singleton");
         if (m_Container != null)
         {
             GameObject.Destroy (m_Container);
