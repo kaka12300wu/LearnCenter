@@ -22,4 +22,54 @@ public class EditorTools
         }
         return false;
     }
+
+    [MenuItem("GameObject/Toogle active _`")]
+    static void ChangeActive()
+    {
+        GameObject[] objs = Selection.gameObjects;
+        foreach(GameObject o in objs)
+        {
+            o.SetActive(!o.activeSelf);
+        }
+    }
+
+    static void ChangeSibling(GameObject o,int offset)
+    {
+        if (null == o) return;
+        Transform parent = o.transform.parent;
+        int sibling = o.transform.GetSiblingIndex();
+        if (sibling == 0 && offset == -1)
+            return;
+        if (null == parent)
+        {
+            o.transform.SetSiblingIndex(sibling + offset);
+        }
+        else
+        {
+            int siblingCount = parent.childCount;
+            if (sibling == siblingCount - 1 && offset == 1)
+                return;
+            o.transform.SetSiblingIndex(sibling + offset);
+        }
+    }
+
+    [MenuItem("GameObject/Move Up &UP")]
+    static void SiblingUp()
+    {
+        GameObject[] objs = Selection.gameObjects;
+        foreach (GameObject o in objs)
+        {
+            ChangeSibling(o,-1);
+        }
+    }
+
+    [MenuItem("GameObject/Move Down &DOWN")]
+    static void SiblingDown()
+    {
+        GameObject[] objs = Selection.gameObjects;
+        foreach (GameObject o in objs)
+        {
+            ChangeSibling(o, 1);
+        }
+    }
 }
