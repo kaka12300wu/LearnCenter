@@ -22,13 +22,14 @@ public class EditorTools
         }
         return false;
     }
-
+    
     [MenuItem("GameObject/Toogle active _`")]
     static void ChangeActive()
     {
         GameObject[] objs = Selection.gameObjects;
         foreach(GameObject o in objs)
         {
+            if (!EditorHelper.IsHirachyGameObject(o)) continue;
             o.SetActive(!o.activeSelf);
         }
     }
@@ -53,23 +54,50 @@ public class EditorTools
         }
     }
 
-    [MenuItem("GameObject/Move Up &UP")]
+    [MenuItem("Edit/Move Up &UP")]
     static void SiblingUp()
     {
         GameObject[] objs = Selection.gameObjects;
         foreach (GameObject o in objs)
         {
+            if (EditorHelper.IsAsset(o)) continue;
             ChangeSibling(o,-1);
         }
     }
 
-    [MenuItem("GameObject/Move Down &DOWN")]
+    [MenuItem("Edit/Move Down &DOWN")]
     static void SiblingDown()
     {
         GameObject[] objs = Selection.gameObjects;
         foreach (GameObject o in objs)
         {
+            if (EditorHelper.IsAsset(o)) continue;
             ChangeSibling(o, 1);
         }
     }
+
+    [MenuItem("Edit/Move Up &UP", true)]
+    static bool CheckSiblingUp()
+    {
+        GameObject[] objs = Selection.gameObjects;
+        foreach (GameObject o in objs)
+        {
+            if (!EditorHelper.IsHirachyGameObject(o)) 
+                return false;
+        }
+        return true;
+    }
+
+    [MenuItem("Edit/Move Down &DOWN", true)]
+    static bool CheckSiblingDown()
+    {
+        GameObject[] objs = Selection.gameObjects;
+        foreach (GameObject o in objs)
+        {
+            if (!EditorHelper.IsHirachyGameObject(o))
+                return false;
+        }
+        return true;
+    }
+    
 }
