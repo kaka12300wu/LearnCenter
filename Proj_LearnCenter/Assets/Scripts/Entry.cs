@@ -12,21 +12,21 @@ public class Entry : MonoBehaviour
 	void Awake ()
 	{
         GLog.Init();
-        //ZVector3[, ,] arg = new ZVector3[3, 3, 3];
+        ZVector3[, ,] arg = new ZVector3[3, 3, 3];
 
-        //for (int i = 0; i < 3; ++i)
-        //{
-        //    for (int j = 0; j < 3; ++j)
-        //    {
-        //        for (int s = 0; s < 3; ++s)
-        //        {
-        //            arg[i, j, s] = new ZVector3(Random.Range(i, (i + 5) * 15), Random.Range(j, (j + 5) * 15), Random.Range(i + j, (i + j + 5) * 15));
-        //        }
-        //    }
-        //}
-        //byte[] buffer = Serializer.GetBytes(arg);
+        for (int i = 0; i < 3; ++i)
+        {
+            for (int j = 0; j < 3; ++j)
+            {
+                for (int s = 0; s < 3; ++s)
+                {
+                    arg[i, j, s] = new ZVector3(Random.Range(i, (i + 5) * 15), Random.Range(j, (j + 5) * 15), Random.Range(i + j, (i + j + 5) * 15));
+                }
+            }
+        }
+        byte[] buffer = Serializer.GetBytes(arg);
 
-        ////SingletonObject.getInstance<FileHelper>().SaveFile(Application.persistentDataPath + "/Tmp/Serialization/27ZVector3.dno", buffer);
+        SingletonObject.getInstance<FileHelper>().SaveFile(Application.dataPath + "/Tmp/Serialization/27ZVector3.dno", buffer);
         ////buffer = SingletonObject.getInstance<FileHelper>().ReadFile(Application.persistentDataPath + "/Tmp/Serialization/27ZVector3.dno");
         
         //GLog.Log(buffer.Length.ToString());
@@ -54,20 +54,20 @@ public class Entry : MonoBehaviour
         //Dictionary<int,int> deArg = Serializer.DeSerialize<Dictionary<int, int>>(buffer);
         //Debug.Log(deArg.Count);
 
-        List<ZVector3> list = new List<ZVector3>();
-        list.Add(new ZVector3(Random.Range(0, 50), Random.Range(0, 50), Random.Range(0, 50)));
-        list.Add(new ZVector3(Random.Range(0, 50), Random.Range(0, 50), Random.Range(0, 50)));
-        list.Add(new ZVector3(Random.Range(0, 50), Random.Range(0, 50), Random.Range(0, 50)));
-        list.Add(new ZVector3(Random.Range(0, 50), Random.Range(0, 50), Random.Range(0, 50)));
-        list.Add(new ZVector3(Random.Range(0, 50), Random.Range(0, 50), Random.Range(0, 50)));
-        list.Add(new ZVector3(Random.Range(0, 50), Random.Range(0, 50), Random.Range(0, 50)));
-        byte[] buffer = Serializer.GetBytes(list);
-        Debug.Log(buffer.Length);
-        List<ZVector3> deArg = Serializer.DeSerialize<List<ZVector3>>(buffer);
-        foreach(ZVector3 v in deArg)
-        {
-            GLog.Log(v.ToString());
-        }
+        //List<ZVector3> list = new List<ZVector3>();
+        //list.Add(new ZVector3(Random.Range(0, 50), Random.Range(0, 50), Random.Range(0, 50)));
+        //list.Add(new ZVector3(Random.Range(0, 50), Random.Range(0, 50), Random.Range(0, 50)));
+        //list.Add(new ZVector3(Random.Range(0, 50), Random.Range(0, 50), Random.Range(0, 50)));
+        //list.Add(new ZVector3(Random.Range(0, 50), Random.Range(0, 50), Random.Range(0, 50)));
+        //list.Add(new ZVector3(Random.Range(0, 50), Random.Range(0, 50), Random.Range(0, 50)));
+        //list.Add(new ZVector3(Random.Range(0, 50), Random.Range(0, 50), Random.Range(0, 50)));
+        //byte[] buffer = Serializer.GetBytes(list);
+        //Debug.Log(buffer.Length);
+        //List<ZVector3> deArg = Serializer.DeSerialize<List<ZVector3>>(buffer);
+        //foreach(ZVector3 v in deArg)
+        //{
+        //    GLog.Log(v.ToString());
+        //}
 	}
 
     

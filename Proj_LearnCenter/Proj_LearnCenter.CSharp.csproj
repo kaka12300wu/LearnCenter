@@ -13,13 +13,11 @@
     <TargetFrameworkIdentifier>.NETFramework</TargetFrameworkIdentifier>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <TargetFrameworkProfile>Unity Subset v3.5</TargetFrameworkProfile>
-    <CompilerResponseFile>
-    </CompilerResponseFile>
+    <CompilerResponseFile></CompilerResponseFile>
     <UnityProjectType>Game:1</UnityProjectType>
     <UnityBuildTarget>StandaloneWindows:5</UnityBuildTarget>
     <UnityVersion>5.6.3f1</UnityVersion>
-    <RootNamespace>
-    </RootNamespace>
+    <RootNamespace></RootNamespace>
     <LangVersion Condition=" '$(VisualStudioVersion)' != '10.0' ">4</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -85,44 +83,44 @@
       <HintPath>Library\UnityAssemblies\UnityEditor.iOS.Extensions.Common.dll</HintPath>
     </Reference>
     <Reference Include="protobuf-net">
-      <HintPath>Assets\Plugins\protobuf-net.dll</HintPath>
+      <HintPath>Assets\Plugins\Protobuf-net\protobuf-net.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Scripts\Core\DebugHelpeTools\DebugPanelManager.cs" />
+    <Compile Include="Assets\Scripts\Core\DebugHelpeTools\GLog.cs" />
+    <Compile Include="Assets\Scripts\Core\Serializer\BuildInTypeSerializer\BooleanSerializer.cs" />
+    <Compile Include="Assets\Scripts\Core\Serializer\BuildInTypeSerializer\ByteSerializer.cs" />
+    <Compile Include="Assets\Scripts\Core\Serializer\BuildInTypeSerializer\CharSerializer.cs" />
+    <Compile Include="Assets\Scripts\Core\Serializer\BuildInTypeSerializer\DoubleSerializer.cs" />
+    <Compile Include="Assets\Scripts\Core\Serializer\BuildInTypeSerializer\FloatSerializer.cs" />
+    <Compile Include="Assets\Scripts\Core\Serializer\BuildInTypeSerializer\IntSerializer.cs" />
+    <Compile Include="Assets\Scripts\Core\Serializer\BuildInTypeSerializer\LongSerializer.cs" />
+    <Compile Include="Assets\Scripts\Core\Serializer\BuildInTypeSerializer\ShortSerializer.cs" />
+    <Compile Include="Assets\Scripts\Core\Serializer\BuildInTypeSerializer\StringSerializer.cs" />
+    <Compile Include="Assets\Scripts\Core\Serializer\BuildInTypeSerializer\UIntSerializer.cs" />
+    <Compile Include="Assets\Scripts\Core\Serializer\BuildInTypeSerializer\ULongSerializer.cs" />
+    <Compile Include="Assets\Scripts\Core\Serializer\BuildInTypeSerializer\UShortSerializer.cs" />
+    <Compile Include="Assets\Scripts\Core\Serializer\ComplexTypeSerializer\ArraySerializer.cs" />
+    <Compile Include="Assets\Scripts\Core\Serializer\ComplexTypeSerializer\ClassSerializer.cs" />
+    <Compile Include="Assets\Scripts\Core\Serializer\ComplexTypeSerializer\DictionarySerializer.cs" />
+    <Compile Include="Assets\Scripts\Core\Serializer\ComplexTypeSerializer\ListSerializer.cs" />
+    <Compile Include="Assets\Scripts\Core\Serializer\SerializeBase.cs" />
+    <Compile Include="Assets\Scripts\Core\Serializer\SerializeType.cs" />
+    <Compile Include="Assets\Scripts\Core\Serializer\Serializer.cs" />
+    <Compile Include="Assets\Scripts\Core\Serializer\SerializerHelper.cs" />
+    <Compile Include="Assets\Scripts\Core\Singleton\ISingletonInit.cs" />
+    <Compile Include="Assets\Scripts\Core\Singleton\SingletonObject.cs" />
+    <Compile Include="Assets\Scripts\Core\Tools\FileHelper.cs" />
+    <Compile Include="Assets\Scripts\Core\Tools\Utils.cs" />
+    <Compile Include="Assets\Scripts\Core\UI\Component\Layout\ScreenLayoutElement.cs" />
     <Compile Include="Assets\Scripts\DataBase\DataBase.cs" />
     <Compile Include="Assets\Scripts\DataBase\DataModel\ItemModel.cs" />
     <Compile Include="Assets\Scripts\DataBase\DataModel\PlayerModel.cs" />
     <Compile Include="Assets\Scripts\DataBase\DataStructure\ItemData.cs" />
     <Compile Include="Assets\Scripts\DataBase\DataStructure\PlayerData.cs" />
     <Compile Include="Assets\Scripts\Entry.cs" />
-    <Compile Include="Assets\Scripts\Singleton\ISingletonInit.cs" />
-    <Compile Include="Assets\Scripts\Singleton\SingletonObject.cs" />
-    <Compile Include="Assets\Scripts\Tools\FileHelper.cs" />
-    <Compile Include="Assets\Scripts\Tools\ProtoSerializer.cs" />
-    <Compile Include="Assets\Scripts\Tools\Serializer\BuildInTypeSerializer\BooleanSerializer.cs" />
-    <Compile Include="Assets\Scripts\Tools\Serializer\BuildInTypeSerializer\ByteSerializer.cs" />
-    <Compile Include="Assets\Scripts\Tools\Serializer\BuildInTypeSerializer\CharSerializer.cs" />
-    <Compile Include="Assets\Scripts\Tools\Serializer\BuildInTypeSerializer\DoubleSerializer.cs" />
-    <Compile Include="Assets\Scripts\Tools\Serializer\BuildInTypeSerializer\FloatSerializer.cs" />
-    <Compile Include="Assets\Scripts\Tools\Serializer\BuildInTypeSerializer\IntSerializer.cs" />
-    <Compile Include="Assets\Scripts\Tools\Serializer\BuildInTypeSerializer\LongSerializer.cs" />
-    <Compile Include="Assets\Scripts\Tools\Serializer\BuildInTypeSerializer\ShortSerializer.cs" />
-    <Compile Include="Assets\Scripts\Tools\Serializer\BuildInTypeSerializer\StringSerializer.cs" />
-    <Compile Include="Assets\Scripts\Tools\Serializer\BuildInTypeSerializer\UIntSerializer.cs" />
-    <Compile Include="Assets\Scripts\Tools\Serializer\BuildInTypeSerializer\ULongSerializer.cs" />
-    <Compile Include="Assets\Scripts\Tools\Serializer\BuildInTypeSerializer\UShortSerializer.cs" />
-    <Compile Include="Assets\Scripts\Tools\Serializer\ComplexTypeSerializer\ArraySerializer.cs" />
-    <Compile Include="Assets\Scripts\Tools\Serializer\ComplexTypeSerializer\ListSerializer.cs" />
-    <Compile Include="Assets\Scripts\Tools\Serializer\ComplexTypeSerializer\ClassSerializer.cs" />
-    <Compile Include="Assets\Scripts\Tools\Serializer\ComplexTypeSerializer\DictionarySerializer.cs" />
-    <Compile Include="Assets\Scripts\Tools\Serializer\SerializeBase.cs" />
-    <Compile Include="Assets\Scripts\Tools\Serializer\SerializeType.cs" />
-    <Compile Include="Assets\Scripts\Tools\Serializer\Serializer.cs" />
-    <Compile Include="Assets\Scripts\Tools\Serializer\SerializerHelper.cs" />
-    <Compile Include="Assets\Scripts\Tools\Utils.cs" />
-    <Compile Include="Assets\Scripts\UI\Component\Layout\ScreenLayoutElement.cs" />
-    <Compile Include="Assets\Tmp\Scripts\DebugHelpeTools\DebugPanelManager.cs" />
-    <Compile Include="Assets\Tmp\Scripts\DebugHelpeTools\GLog.cs" />
+    <Compile Include="Assets\Scripts\PluginsHelper\Protobuf\ProtoSerializer.cs" />
     <Compile Include="Assets\Tmp\Scripts\Person.cs" />
     <Compile Include="Assets\Tmp\Scripts\ProtoStructureTest.cs" />
   </ItemGroup>
