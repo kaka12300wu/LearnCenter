@@ -118,6 +118,7 @@
     <Compile Include="Assets\Scripts\Core\Tools\Global.cs" />
     <Compile Include="Assets\Scripts\Core\Tools\StringHelper.cs" />
     <Compile Include="Assets\Scripts\Core\Tools\Utils.cs" />
+    <Compile Include="Assets\Scripts\Core\UI\Component\Layout\OrientaionLayoutElement.cs" />
     <Compile Include="Assets\Scripts\Core\UI\Component\Layout\ScreenLayoutElement.cs" />
     <Compile Include="Assets\Scripts\DataBase\DataBase.cs" />
     <Compile Include="Assets\Scripts\DataBase\DataModel\ItemModel.cs" />

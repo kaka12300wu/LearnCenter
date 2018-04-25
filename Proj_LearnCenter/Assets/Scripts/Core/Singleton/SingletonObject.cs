@@ -36,9 +36,23 @@ public class SingletonObject : MonoBehaviour
         }
         if (m_Container == null)
         {
-            m_Container = new GameObject ();
+#if UNITY_EDITOR
+            if (!Application.isPlaying)
+            {
+                while (true)
+                {
+                    m_Container = GameObject.Find(m_Name);
+                    if (null != m_Container)
+                        GameObject.DestroyImmediate(m_Container);
+                    else
+                        break;
+                }
+            }
+
+#endif
+            m_Container = new GameObject();
             m_Container.name = m_Name;
-            m_Container.AddComponent (typeof (SingletonObject));
+            m_Container.AddComponent(typeof(SingletonObject));
             if (typeof(T) != typeof(GLog))
                 GLog.Log("Create Singleton from:" + typeof(T).ToString());
         }

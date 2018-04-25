@@ -1,7 +1,6 @@
 ﻿#if UNITY_IOS || UNITY_ANDROID
 #if !UNITY_EDITOR
 #define UNITY_MOBILE
-
 #endif
 #endif
 
@@ -14,5 +13,7 @@ public class Global
 #else
     public static bool UNITY_MOBILE = false;
 #endif
+
+
 }
 

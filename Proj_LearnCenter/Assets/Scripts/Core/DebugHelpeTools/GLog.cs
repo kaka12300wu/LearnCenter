@@ -35,12 +35,7 @@ public class GLog : ISingletonInit
             return mark;
         }
 
-        //public string ToGUIString()
-        //{
-        //    return string.Format("{0}-{1}:{2}", tmLog.ToString("HH:mm:ss"), GetMark(), msg);
-        //}
-
-        public string ToFileString()
+        public override string ToString()
         {
             return string.Format("{0}-{1}:{2}\r\n{3}\r\n", tmLog.ToString("HH:mm:ss"),GetMark(false),msg,stackTrace);
         }
@@ -213,7 +208,7 @@ public class GLog : ISingletonInit
         StringBuilder sbuilder = new StringBuilder();
         for(int i = 0,max = logList.Count;i<max;++i)
         {
-            sbuilder.Append(logList[i].ToFileString() + "\r\n");
+            sbuilder.Append(logList[i].ToString() + "\r\n");
         }
         File.AppendAllText(logFilePath,sbuilder.ToString(),Encoding.UTF8);
 #else

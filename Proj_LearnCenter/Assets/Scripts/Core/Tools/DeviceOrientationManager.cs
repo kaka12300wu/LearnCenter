@@ -11,6 +11,13 @@ public class DeviceOrientationManager : MonoBehaviour
         if (Global.UNITY_MOBILE)
         {
             orientation = Input.deviceOrientation;
+            if(orientation > DeviceOrientation.LandscapeRight || orientation < DeviceOrientation.Portrait)
+            {
+                if (Screen.width > Screen.height)
+                    orientation = DeviceOrientation.LandscapeLeft;
+                else
+                    orientation = DeviceOrientation.Portrait;
+            }
         }
         else
         {
@@ -51,6 +58,11 @@ public class DeviceOrientationManager : MonoBehaviour
                 orientation = DeviceOrientation.Portrait;
             }
         }        
+    }
+
+    public bool IsLandscape()
+    {
+        return orientation == DeviceOrientation.LandscapeLeft || orientation == DeviceOrientation.LandscapeRight;
     }
 
     public static void Init()
