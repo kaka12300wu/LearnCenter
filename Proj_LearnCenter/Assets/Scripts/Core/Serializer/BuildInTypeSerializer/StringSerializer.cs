@@ -21,7 +21,7 @@
             byte[] buffer = Encoding.UTF8.GetBytes(key);
             byte length = (byte)buffer.Length;
             List<byte> list = new List<byte>();
-            list.AddRange(length.ToBytes());
+            list.Add(length);
             list.AddRange(buffer);
             return list.ToArray();
         }

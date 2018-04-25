@@ -36,10 +36,11 @@ public class SingletonObject : MonoBehaviour
         }
         if (m_Container == null)
         {
-            GLog.Log("Create Singleton.");
             m_Container = new GameObject ();
             m_Container.name = m_Name;
             m_Container.AddComponent (typeof (SingletonObject));
+            if (typeof(T) != typeof(GLog))
+                GLog.Log("Create Singleton from:" + typeof(T).ToString());
         }
         string name = typeof (T).ToString ();
         if (!m_SingletonMap.ContainsKey (name))

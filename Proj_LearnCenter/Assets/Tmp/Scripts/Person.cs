@@ -3,14 +3,13 @@ using UnityEngine;
 using ZSerializer;
 
 [Serializable]
-public class Person : SerializeBase
+public class Person
 {
 	public ZVector3 pos;
 	public int lv;
 	public string name;
 	public float speed;
 	public string desc;
-	public string[] args;
     private string val;
     public string BigVal
     {
@@ -21,12 +20,12 @@ public class Person : SerializeBase
 
 	public override string ToString ()
 	{
-		return string.Format ("{0}:Lv.{1},speed-{2},desc-{3},pos({4})", name, lv, speed, desc, pos.ToString ());
+		return string.Format ("{0}:Lv.{1},speed-{2},desc-{3},pos-{4},BigVal-{5}", name, lv, speed, desc, pos,BigVal);
 	}
 }
 
 [Serializable]
-public class ZVector3 : SerializeBase
+public class ZVector3
 {
 	public float x;
 	public float y;

@@ -122,7 +122,14 @@
                     break;
                 case SerializeType.st_int:
                     {
-                        obj = reader.ReadInt32();
+                        if (type.IsEnum)
+                        {
+                            obj = Enum.Parse(type, Enum.GetName(type, reader.ReadInt32()));
+                        }
+                        else
+                        {
+                            obj = reader.ReadInt32();
+                        }                        
                     } 
                     break;
                 case SerializeType.st_uint:
@@ -233,7 +240,14 @@
                     break;
                 case SerializeType.st_int:
                     {
-                        obj = Convert.ChangeType(buffer.ToInt(), type);
+                        if (type.IsEnum)
+                        {
+                            obj = Enum.Parse(type,Enum.GetName(type, buffer.ToInt()));
+                        }
+                        else
+                        {
+                            obj = Convert.ChangeType(buffer.ToInt(), type);
+                        }
                     }
                     break;
                 case SerializeType.st_uint:
@@ -253,7 +267,9 @@
                     break;
                 case SerializeType.st_string:
                     {
-                        obj = Convert.ChangeType(buffer.ToUTF8String(), type);
+                        byte[] realBuffer = new byte[buffer.Length - sizeof(int)];
+                        Array.Copy(buffer, sizeof(int), realBuffer, 0, realBuffer.Length);
+                        obj = Convert.ChangeType(realBuffer.ToUTF8String(), type);
                     }
                     break;
                 case SerializeType.st_class:
@@ -286,5 +302,6 @@
                     break;
             }
         }        
+
     }
 }

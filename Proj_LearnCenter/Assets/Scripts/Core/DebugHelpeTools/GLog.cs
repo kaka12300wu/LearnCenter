@@ -16,9 +16,8 @@ using System.IO;
 using System.Text;
 #endif
 
-public class GLog : MonoBehaviour
+public class GLog : ISingletonInit
 {
-
     public class LogItem
     {
         public string msg;
@@ -49,14 +48,18 @@ public class GLog : MonoBehaviour
 
     static List<LogItem> logList;
     static bool b_init = false;
+#if LOG_TO_FILE
     static string logFilePath;
+#endif
 
     public static event Action<LogItem> OnNewLogAdd;
-
-    void Awake()
+       
+    public void Init()
     {
+        if (b_init)
+            return;
 #if LOG_ON
-        SingletonObject.getInstance<GLog>(this);
+        logList = new List<LogItem>();
 #if UNITY_MOBILE
         Application.logMessageReceived += (string condition, string stackTrace, LogType type) =>
         {
@@ -69,19 +72,6 @@ public class GLog : MonoBehaviour
                 LogError(msg);
         };
 #endif
-#endif
-    }
-    
-    public static void Init()
-    {
-        if (b_init)
-            return;
-#if LOG_ON
-#if DEBUG_VERSION
-        GameObject o = Resources.Load<GameObject>("DebugHelper");
-        GameObject.Instantiate<GameObject>(o).name = o.name;
-#endif
-        logList = new List<LogItem>();
 #if LOG_TO_FILE
         string dirLog = Path.Combine(Application.persistentDataPath,"Log");
         if (!Directory.Exists(dirLog))
@@ -93,6 +83,12 @@ public class GLog : MonoBehaviour
         b_init = true;
 
 #endif
+    }
+
+    public void Dispose()
+    {
+        logList.Clear();
+        logList = null;
     }
 
     static string GetStackTraceModelName()
@@ -134,6 +130,8 @@ public class GLog : MonoBehaviour
     public static void Log(string msg)
     {
 #if LOG_ON
+        if (!b_init)
+            SingletonObject.getInstance<GLog>();
 #if UNITY_MOBILE
         LogItem item = new LogItem();
         item.msg = msg;
@@ -147,9 +145,19 @@ public class GLog : MonoBehaviour
 #endif
     }
 
+    public static void Log(object o,params object[] args)
+    {
+        string msg = o.ToString();
+        if (args.Length > 0 && o.GetType() == typeof(string))
+            msg = string.Format(msg,args);
+        Log(msg);
+    }
+
     public static void LogWarning(string msg)
     {
 #if LOG_ON
+        if (!b_init)
+            SingletonObject.getInstance<GLog>();
 #if UNITY_MOBILE
         LogItem item = new LogItem();
         item.msg = msg;
@@ -163,9 +171,19 @@ public class GLog : MonoBehaviour
 #endif
     }
 
+    public static void LogWarning(object o, params object[] args)
+    {
+        string msg = o.ToString();
+        if (args.Length > 0 && o.GetType() == typeof(string))
+            msg = string.Format(msg, args);
+        LogWarning(msg);
+    }
+
     public static void LogError(string msg)
     {
 #if LOG_ON
+        if (!b_init)
+            SingletonObject.getInstance<GLog>();
 #if UNITY_MOBILE
         LogItem item = new LogItem();
         item.msg = msg;
@@ -179,9 +197,19 @@ public class GLog : MonoBehaviour
 #endif
     }
 
+    public static void LogError(object o, params object[] args)
+    {
+        string msg = o.ToString();
+        if (args.Length > 0 && o.GetType() == typeof(string))
+            msg = string.Format(msg, args);
+        LogError(msg);
+    }
+
     public void WriteLogToFile()
     {
 #if UNITY_MOBILE && DEBUG_VERSION
+        if (!b_init)
+            SingletonObject.getInstance<GLog>();
         StringBuilder sbuilder = new StringBuilder();
         for(int i = 0,max = logList.Count;i<max;++i)
         {
@@ -189,7 +217,7 @@ public class GLog : MonoBehaviour
         }
         File.AppendAllText(logFilePath,sbuilder.ToString(),Encoding.UTF8);
 #else
-        Debug.Log("只有移动端可以写入日志到文件！");
+        Log("只有移动端可以写入日志到文件！");
 #endif
     }
 

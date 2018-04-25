@@ -403,7 +403,6 @@ GameObject:
   - component: {fileID: 222919078081763252}
   - component: {fileID: 114470066070936586}
   - component: {fileID: 114630922988738688}
-  - component: {fileID: 114138152326506810}
   - component: {fileID: 114262650293551616}
   m_Layer: 5
   m_Name: LogToFile
@@ -757,17 +756,6 @@ MonoBehaviour:
   m_FillAmount: 1
   m_FillClockwise: 1
   m_FillOrigin: 0
---- !u!114 &114138152326506810
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1654313569555288}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4c66e0e0407e2c34aa885fe48b4a7212, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &114185012012694990
 MonoBehaviour:
   m_ObjectHideFlags: 1

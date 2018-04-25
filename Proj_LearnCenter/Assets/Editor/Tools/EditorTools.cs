@@ -99,11 +99,4 @@ public class EditorTools
         }
         return true;
     }
-
-    [MenuItem("Frame/Test/test1 &NUMLOCK1")]
-    static void TestMethod()
-    {
-        Debug.Log("TestMethod");
-    }
-    
 }

@@ -10,6 +10,8 @@
         #region UnityLife calls
         private void Awake()
         {
+            DontDestroyOnLoad(gameObject);
+            name = "DebugPanel";
             InitLayoutCorners();
         }
         #endregion
@@ -50,8 +52,6 @@
                 logInfosPanel.gameObject.SetActive(true);          
             }
         }
-
-
         #endregion
 
     }

@@ -108,13 +108,14 @@
     <Compile Include="Assets\Scripts\Core\Serializer\ComplexTypeSerializer\ClassSerializer.cs" />
     <Compile Include="Assets\Scripts\Core\Serializer\ComplexTypeSerializer\DictionarySerializer.cs" />
     <Compile Include="Assets\Scripts\Core\Serializer\ComplexTypeSerializer\ListSerializer.cs" />
-    <Compile Include="Assets\Scripts\Core\Serializer\SerializeBase.cs" />
     <Compile Include="Assets\Scripts\Core\Serializer\SerializeType.cs" />
     <Compile Include="Assets\Scripts\Core\Serializer\Serializer.cs" />
     <Compile Include="Assets\Scripts\Core\Serializer\SerializerHelper.cs" />
     <Compile Include="Assets\Scripts\Core\Singleton\ISingletonInit.cs" />
     <Compile Include="Assets\Scripts\Core\Singleton\SingletonObject.cs" />
+    <Compile Include="Assets\Scripts\Core\Tools\DeviceOrientationManager.cs" />
     <Compile Include="Assets\Scripts\Core\Tools\FileHelper.cs" />
+    <Compile Include="Assets\Scripts\Core\Tools\Global.cs" />
     <Compile Include="Assets\Scripts\Core\Tools\StringHelper.cs" />
     <Compile Include="Assets\Scripts\Core\Tools\Utils.cs" />
     <Compile Include="Assets\Scripts\Core\UI\Component\Layout\ScreenLayoutElement.cs" />

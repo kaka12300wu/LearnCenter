@@ -10,8 +10,7 @@
     {
         List<GLog.LogItem> srcLogInfos;
         List<GLog.LogItem> showingLogs;
-
-
+        
         public Image imgLog;
         public Image imgWarn;
         public Image imgError;
@@ -85,8 +84,7 @@
             }
             FilterLogs();
         }
-
-
+        
         public void Close()
         {
             gameObject.SetActive(false);

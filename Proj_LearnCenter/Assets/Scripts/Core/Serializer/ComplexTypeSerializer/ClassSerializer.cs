@@ -14,14 +14,29 @@ namespace ZSerializer
             FieldInfo[] fileds = type.GetFields(BindingFlags.Instance | BindingFlags.Public);
             foreach(FieldInfo info in fileds)
             {
+                object val = info.GetValue(obj);
+                if (null == val)
+                    continue;
                 LeaguerInfo pro = new LeaguerInfo();
                 pro.key = info.Name;
-                object val = info.GetValue(obj);
                 pro.typeCode = SerializeType.GetSerializeType(val.GetType());
                 pro.valBuffer = Serializer.GetBytes(val);
                 list.Add(pro);
             }
 
+            PropertyInfo[] props = type.GetProperties(BindingFlags.Instance | BindingFlags.Public);
+            foreach(PropertyInfo info in props)
+            {
+                object val = info.GetValue(obj, null);
+                if (null == val)
+                    continue;
+                LeaguerInfo pro = new LeaguerInfo();
+                pro.key = info.Name;                
+                pro.typeCode = SerializeType.GetSerializeType(val.GetType());
+                pro.valBuffer = Serializer.GetBytes(val);
+                list.Add(pro);
+            }
+            
             return list;
         }
 
@@ -31,11 +46,7 @@ namespace ZSerializer
             {
                 throw new Exception("ClassToBytes must get arguments with typeof class!");
             }
-            if (!arg.GetType().IsSubclassOf(typeof(SerializeBase)))
-            {
-                throw new Exception("ClassToBytes must get subclass of SerializeBase!");
-            }
-
+            
             List<LeaguerInfo> list = GetObjectPropertyInfos(arg);
             List<byte> res = new List<byte>();
             foreach(LeaguerInfo info in list)
@@ -51,10 +62,6 @@ namespace ZSerializer
 
         public static void BytesToClass(byte[] buffer,Type type,ref Object res)
         {
-            if (!type.IsSubclassOf(typeof(SerializeBase)))
-            {
-                throw new Exception("ClassToBytes must get subclass of SerializeBase!");
-            }
             byte typeCode = SerializeType.GetSerializeType(type);
             if(typeCode != SerializeType.st_class)
             {
@@ -87,15 +94,26 @@ namespace ZSerializer
                         dicInfos.Add(info.key,info);
                     }
 
-                    FieldInfo[] fileds = res.GetType().GetFields(BindingFlags.Instance | BindingFlags.Public);
-                    foreach (FieldInfo field in fileds)
+                    FieldInfo[] fields = res.GetType().GetFields(BindingFlags.Instance | BindingFlags.Public);
+                    foreach (FieldInfo field in fields)
                     {
                         if(dicInfos.ContainsKey(field.Name))
                         {
-                            object obj = Activator.CreateInstance(field.FieldType);
+                            object obj = default(object);                           
                             Serializer.DeSerialize(dicInfos[field.Name].valBuffer, field.FieldType, ref obj);
                             field.SetValue(res, obj);
                         }                       
+                    }
+
+                    PropertyInfo[] props = type.GetProperties(BindingFlags.Instance | BindingFlags.Public);
+                    foreach (PropertyInfo info in props)
+                    {
+                        if (dicInfos.ContainsKey(info.Name))
+                        {
+                            object obj = default(object);
+                            Serializer.DeSerialize(dicInfos[info.Name].valBuffer, info.PropertyType, ref obj);
+                            info.SetValue(res, obj, null);
+                        }  
                     }
                 }
                 catch (Exception e)
