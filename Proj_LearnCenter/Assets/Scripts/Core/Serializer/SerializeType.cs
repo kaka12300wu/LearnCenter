@@ -23,8 +23,7 @@
         public const byte st_dictionary = 16;
 
 
-        static Dictionary<Type, byte> reg_CustomTypes;
-
+        //static Dictionary<Type, byte> reg_CustomTypes;
 
         public static byte GetSerializeType(Type type)
         {
@@ -69,8 +68,8 @@
                 return st_dictionary;
             if (type.IsClass)
                 return st_class;
-            if (reg_CustomTypes.ContainsKey(type))
-                return reg_CustomTypes[type];
+            //if (reg_CustomTypes.ContainsKey(type))
+            //    return reg_CustomTypes[type];
             return st_error;
         }
 
@@ -81,17 +80,17 @@
             return GetSerializeType(obj.GetType());            
         }
 
-        public static void RegisteType(Type type,byte code)
-        {
-            if (null == reg_CustomTypes)
-                reg_CustomTypes = new Dictionary<Type, byte>();
-            if (!reg_CustomTypes.ContainsKey(type))
-                reg_CustomTypes.Add(type,code);
-            else
-            {
-                GLog.Log(string.Format("{0} has changed typeCode register from {1} to {2}!", type, reg_CustomTypes[type], code));
-                reg_CustomTypes[type] = code;
-            }
-        }
+        //public static void RegisteType(Type type,byte code)
+        //{
+        //    if (null == reg_CustomTypes)
+        //        reg_CustomTypes = new Dictionary<Type, byte>();
+        //    if (!reg_CustomTypes.ContainsKey(type))
+        //        reg_CustomTypes.Add(type,code);
+        //    else
+        //    {
+        //        GLog.Log(string.Format("{0} has changed typeCode register from {1} to {2}!", type, reg_CustomTypes[type], code));
+        //        reg_CustomTypes[type] = code;
+        //    }
+        //}
     }
 }

@@ -25,11 +25,11 @@ public class SingletonObject : MonoBehaviour
             return true;
         }
         return false;
-
     }
+
     public static T getInstance<T> (T obj = default (T)) where T : class, new ()
     {
-        if (m_IsDestroying)
+        if (Application.isPlaying && m_IsDestroying)
         {
             GLog.LogWarning("SingletonObject is mark as Destroy! Can not get instance any more!");
             return null;
@@ -53,8 +53,7 @@ public class SingletonObject : MonoBehaviour
             m_Container = new GameObject();
             m_Container.name = m_Name;
             m_Container.AddComponent(typeof(SingletonObject));
-            if (typeof(T) != typeof(GLog))
-                GLog.Log("Create Singleton from:" + typeof(T).ToString());
+            Debug.Log("Create Singleton from:" + typeof(T).ToString());
         }
         string name = typeof (T).ToString ();
         if (!m_SingletonMap.ContainsKey (name))
@@ -117,6 +116,7 @@ public class SingletonObject : MonoBehaviour
     {
         GLog.Log ("Awake Singleton.");
         DontDestroyOnLoad (gameObject);
+        m_IsDestroying = false;
     }
 
     void OnApplicationQuit ()
@@ -129,4 +129,5 @@ public class SingletonObject : MonoBehaviour
             m_IsDestroying = true;
         }
     }
+
 }

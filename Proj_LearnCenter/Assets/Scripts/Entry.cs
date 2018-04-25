@@ -7,30 +7,23 @@ using Random = UnityEngine.Random;
 
 public class Entry : MonoBehaviour
 {
-
-
     #region Unity lifecalls
     // Use this for initialization
 	void Awake ()
     {
-        LoadDebugObj();
         SingletonObject.getInstance<Entry>(this);
-        RegistCustomTypeCode();
+        LoadDebugObj();
         DeviceOrientationManager.Init();
+
        
-	}
+    }
 
     void Update()
     {
 
     }
     #endregion
-
-    void RegistCustomTypeCode()
-    {
-        SerializeType.RegisteType(typeof(Vector3), SerializeType.st_class);
-
-    }
+       
 
     void LoadDebugObj()
     {

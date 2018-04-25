@@ -8,6 +8,9 @@ using UnityEngine.EventSystems;
 [RequireComponent(typeof(RectTransform)), ExecuteInEditMode, AddComponentMenu("Layout/OrientaionLayoutElement", 150)]
 public sealed class OrientaionLayoutElement : UIBehaviour, ILayoutElement, ILayoutIgnorer
 {
+    [SerializeField]
+    private bool m_IgnoreLayout;
+
     public Vector2 potraitPreferredSize;
 
     [Tooltip("val.x and val.y will devide 100")]
@@ -26,11 +29,6 @@ public sealed class OrientaionLayoutElement : UIBehaviour, ILayoutElement, ILayo
 
     public Vector2 landscapeMinSize;
 
-    [Tooltip("两个值都不为0才会生效,保持纵横比")]
-    public Vector2 aspectRatio;
-
-    [SerializeField]
-    private bool m_IgnoreLayout;
     
     public float preferredWidth
     {
@@ -79,7 +77,7 @@ public sealed class OrientaionLayoutElement : UIBehaviour, ILayoutElement, ILayo
     {
         get
         {
-            return GetProperHeight();
+            return 0;
         }
         set
         {
@@ -92,7 +90,7 @@ public sealed class OrientaionLayoutElement : UIBehaviour, ILayoutElement, ILayo
     {
         get
         {
-            return GetProperWidth();
+            return 0;
         }
         set
         {
@@ -132,7 +130,7 @@ public sealed class OrientaionLayoutElement : UIBehaviour, ILayoutElement, ILayo
         get
         {
             if (SingletonObject.getInstance<DeviceOrientationManager>().IsLandscape())
-            {
+            { 
                 return landscapeMinSize.x;
             }
             else
@@ -198,7 +196,7 @@ public sealed class OrientaionLayoutElement : UIBehaviour, ILayoutElement, ILayo
             min = potraitMinSize.x <= 0 ? retVal : potraitMinSize.x;
             retVal = Mathf.Clamp(retVal, min, max);
         }
-
+        
         return retVal;
     }
 

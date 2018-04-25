@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.Events;
 
+[ExecuteInEditMode]
 public class DeviceOrientationManager : MonoBehaviour
 {   
     public static event UnityAction<DeviceOrientation, DeviceOrientation> OnDeviceOrientationChange;
@@ -25,7 +26,6 @@ public class DeviceOrientationManager : MonoBehaviour
                 orientation = DeviceOrientation.LandscapeLeft;
             else
                 orientation = DeviceOrientation.Portrait;
-
         }
     }
 
