@@ -1,102 +1,105 @@
-using UnityEditor;
-using UnityEditor.Callbacks;
-using UnityEngine;
-
-public class EditorTools
+namespace ZFrame
 {
-    [OnOpenAsset]
-    public static bool OnOpenAsset(int instanceID, int line)
+    using UnityEditor;
+    using UnityEditor.Callbacks;
+    using UnityEngine;
+
+    public class EditorTools
     {
-        string path = AssetDatabase.GetAssetPath(instanceID);
-        if (path.EndsWith(".prefab"))
+        [OnOpenAsset]
+        public static bool OnOpenAsset(int instanceID, int line)
         {
-            GameObject obj = AssetDatabase.LoadAssetAtPath<GameObject>(path);
-            if (null != obj)
+            string path = AssetDatabase.GetAssetPath(instanceID);
+            if (path.EndsWith(".prefab"))
             {
-                GameObject o = PrefabUtility.InstantiatePrefab(obj) as GameObject;
-                o.transform.SetAsLastSibling();
-                Selection.activeObject = o;
-                return true;
+                GameObject obj = AssetDatabase.LoadAssetAtPath<GameObject>(path);
+                if (null != obj)
+                {
+                    GameObject o = PrefabUtility.InstantiatePrefab(obj) as GameObject;
+                    o.transform.SetAsLastSibling();
+                    Selection.activeObject = o;
+                    return true;
+                }
+                return false;
             }
             return false;
         }
-        return false;
-    }
-    
-    [MenuItem("GameObject/Toogle active _`")]
-    static void ChangeActive()
-    {
-        GameObject[] objs = Selection.gameObjects;
-        foreach(GameObject o in objs)
-        {
-            if (!EditorHelper.IsHirachyGameObject(o)) continue;
-            o.SetActive(!o.activeSelf);
-        }
-    }
 
-    static void ChangeSibling(GameObject o,int offset)
-    {
-        if (null == o) return;
-        Transform parent = o.transform.parent;
-        int sibling = o.transform.GetSiblingIndex();
-        if (sibling == 0 && offset == -1)
-            return;
-        if (null == parent)
+        [MenuItem("GameObject/Toogle active _`")]
+        static void ChangeActive()
         {
-            o.transform.SetSiblingIndex(sibling + offset);
+            GameObject[] objs = Selection.gameObjects;
+            foreach (GameObject o in objs)
+            {
+                if (!EditorHelper.IsHirachyGameObject(o)) continue;
+                o.SetActive(!o.activeSelf);
+            }
         }
-        else
+
+        static void ChangeSibling(GameObject o, int offset)
         {
-            int siblingCount = parent.childCount;
-            if (sibling == siblingCount - 1 && offset == 1)
+            if (null == o) return;
+            Transform parent = o.transform.parent;
+            int sibling = o.transform.GetSiblingIndex();
+            if (sibling == 0 && offset == -1)
                 return;
-            o.transform.SetSiblingIndex(sibling + offset);
+            if (null == parent)
+            {
+                o.transform.SetSiblingIndex(sibling + offset);
+            }
+            else
+            {
+                int siblingCount = parent.childCount;
+                if (sibling == siblingCount - 1 && offset == 1)
+                    return;
+                o.transform.SetSiblingIndex(sibling + offset);
+            }
         }
-    }
 
-    [MenuItem("Edit/Move Up &UP")]
-    static void SiblingUp()
-    {
-        GameObject[] objs = Selection.gameObjects;
-        foreach (GameObject o in objs)
+        [MenuItem("Edit/Move Up &UP")]
+        static void SiblingUp()
         {
-            if (EditorHelper.IsAsset(o)) continue;
-            ChangeSibling(o,-1);
+            GameObject[] objs = Selection.gameObjects;
+            foreach (GameObject o in objs)
+            {
+                if (EditorHelper.IsAsset(o)) continue;
+                ChangeSibling(o, -1);
+            }
         }
-    }
 
-    [MenuItem("Edit/Move Down &DOWN")]
-    static void SiblingDown()
-    {
-        GameObject[] objs = Selection.gameObjects;
-        foreach (GameObject o in objs)
+        [MenuItem("Edit/Move Down &DOWN")]
+        static void SiblingDown()
         {
-            if (EditorHelper.IsAsset(o)) continue;
-            ChangeSibling(o, 1);
+            GameObject[] objs = Selection.gameObjects;
+            foreach (GameObject o in objs)
+            {
+                if (EditorHelper.IsAsset(o)) continue;
+                ChangeSibling(o, 1);
+            }
         }
-    }
 
-    [MenuItem("Edit/Move Up &UP", true)]
-    static bool CheckSiblingUp()
-    {
-        GameObject[] objs = Selection.gameObjects;
-        foreach (GameObject o in objs)
+        [MenuItem("Edit/Move Up &UP", true)]
+        static bool CheckSiblingUp()
         {
-            if (!EditorHelper.IsHirachyGameObject(o)) 
-                return false;
+            GameObject[] objs = Selection.gameObjects;
+            foreach (GameObject o in objs)
+            {
+                if (!EditorHelper.IsHirachyGameObject(o))
+                    return false;
+            }
+            return true;
         }
-        return true;
-    }
 
-    [MenuItem("Edit/Move Down &DOWN", true)]
-    static bool CheckSiblingDown()
-    {
-        GameObject[] objs = Selection.gameObjects;
-        foreach (GameObject o in objs)
+        [MenuItem("Edit/Move Down &DOWN", true)]
+        static bool CheckSiblingDown()
         {
-            if (!EditorHelper.IsHirachyGameObject(o))
-                return false;
+            GameObject[] objs = Selection.gameObjects;
+            foreach (GameObject o in objs)
+            {
+                if (!EditorHelper.IsHirachyGameObject(o))
+                    return false;
+            }
+            return true;
         }
-        return true;
     }
 }
