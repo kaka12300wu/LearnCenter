@@ -101,7 +101,10 @@ public class GLog : ISingletonInit
         {
             //非用户代码,系统方法及后面的都是系统调用，不获取用户代码调用结束
             if (System.Diagnostics.StackFrame.OFFSET_UNKNOWN == sfs[i].GetILOffset()) break;
-            _fileName = sfs[i].GetFileName().Replace("\\","/").Replace(Application.dataPath,"Assets");
+            _fileName = sfs[i].GetFileName();
+            if (string.IsNullOrEmpty(_fileName))
+                continue;
+            _fileName = _fileName.Replace("\\","/").Replace(Application.dataPath,"Assets");
             _methodName = sfs[i].GetMethod().ToString();//方法名称
             line = sfs[i].GetFileLineNumber();
             _fileInfo = string.Format("{0} {1} line:{2}\r\n",_fileName,_methodName,line);

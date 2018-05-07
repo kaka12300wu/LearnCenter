@@ -1,8 +1,6 @@
 ﻿namespace ZDebug
 {
-    using System;
     using System.Collections.Generic;
-    using System.Text;
     using UnityEngine;
     using UnityEngine.UI;
 
@@ -10,7 +8,8 @@
     {
         List<GLog.LogItem> srcLogInfos;
         List<GLog.LogItem> showingLogs;
-        
+
+        //public ScrollList scroll;
         public Image imgLog;
         public Image imgWarn;
         public Image imgError;
@@ -19,6 +18,9 @@
         bool showError = true;
         Color color_on = new Color(115 / 255.0f, 91 / 255.0f, 242 / 255.0f, 255 / 255.0f);
         Color color_off = new Color(174 / 255.0f, 174 / 255.0f, 174 / 255.0f, 255 / 255.0f);
+        Color color_info = Color.white;
+        Color color_warn = new Color(255 / 255.0f, 228 / 255.0f, 8 / 255.0f, 255 / 255.0f);
+        Color color_error = new Color(255 / 255.0f, 32 / 255.0f, 32 / 255.0f, 255 / 255.0f);
 
         void OnEnable()
         {
@@ -28,6 +30,12 @@
             GLog.OnNewLogAdd += OnNewLogInfo;
             srcLogInfos = GLog.GetLogInfosList();
             FilterLogs();
+        }
+
+        private void Awake()
+        {
+            //if (null != scroll)
+            //    scroll.renderFunc = FillLogItem;
         }
 
         void FilterLogs()
@@ -46,7 +54,8 @@
                 else if (item.logType == LogType.Error && showError)
                     showingLogs.Add(item);
             }
-
+            //scroll.SetData(showingLogs.ConvertAll((src)=> { return src as object; }));
+            //scroll.Refresh(showingLogs.Count - 1);
         }
 
         void SetImageColor(Image img,bool on)
@@ -63,6 +72,28 @@
         void OnNewLogInfo(GLog.LogItem logItem)
         {
 
+        }
+
+        void FillLogItem(object data,UIReferences refer)
+        {
+            GLog.LogItem item = data as GLog.LogItem;
+            Text txt = refer.Get("Text") as Text;
+            Image img = refer.Get(1) as Image;
+            Button btn = refer.Get(2) as Button;
+
+            txt.text = item.ToString();
+            img.enabled = showingLogs.IndexOf(item) % 2 == 0;
+            btn.AddClickEvent(()=> {
+                
+            });
+            if (item.logType == LogType.Log)
+                txt.color = color_info;
+            else if (item.logType == LogType.Warning)
+                txt.color = color_warn;
+            else if (item.logType == LogType.Error)
+                txt.color = color_error;
+            else
+                txt.color = color_info;
         }
 
         public void OnSelectLogType(int index)
