@@ -9,6 +9,13 @@ public class HorizentalScroll_StaticSize_Single : ScrollListBase
         throw new System.NotImplementedException();
     }
 
+    protected override bool CheckItemShow(ScrollDataElement dataElem)
+    {
+
+
+        return false;
+    }
+
     protected override void CalculateSize(int startIndex = 0)
     {
         elemReuse = datas.Count > 30;

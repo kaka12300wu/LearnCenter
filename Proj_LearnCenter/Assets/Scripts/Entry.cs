@@ -20,7 +20,7 @@ public class Entry : MonoBehaviour
 
     void Update()
     {
-
+        PoolManager.ExpireObject();
     }
     #endregion
        

@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 
+[ExecuteInEditMode]
 public class ScrollElement : MonoBehaviour
 {
     /// <summary>
@@ -16,4 +17,17 @@ public class ScrollElement : MonoBehaviour
 
     [Tooltip("UI元素变量引用")]
     public UIReferences refer;
+
+    [HideInInspector]
+    public Vector2 size;
+
+    //仅在静态尺寸下读取设置好的宽高
+    public void ReadSize()
+    {
+        RectTransform trans = transform as RectTransform;
+        if(null != trans)
+        {
+            size = new Vector2(trans.rect.width,trans.rect.height);
+        }
+    }
 }

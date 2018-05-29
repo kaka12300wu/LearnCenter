@@ -10,6 +10,13 @@ public class VerticalScroll_StaticSize_Multi : ScrollListBase
         throw new System.NotImplementedException();
     }
 
+    protected override bool CheckItemShow(ScrollDataElement dataElem)
+    {
+
+
+        return false;
+    }
+
     protected override void CalculateSize(int startIndex = 0)
     {
         lineCount = (short)Mathf.Max(lineCount,2);

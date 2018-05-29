@@ -71,7 +71,6 @@ namespace ZSerializer
                     list.AddRange(Serializer.GetBytes(arg.GetValue(l.ToArray())));
                 }
             }
-
             list.InsertRange(0,list.Count.ToBytes());
             return list.ToArray();
         }

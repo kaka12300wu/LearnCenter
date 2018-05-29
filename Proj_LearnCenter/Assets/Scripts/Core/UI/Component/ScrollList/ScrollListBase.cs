@@ -1,7 +1,9 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using Object = System.Object;
 
 public enum VerticalScrollDirection
 {
@@ -21,13 +23,21 @@ public abstract class ScrollListBase : MonoBehaviour
 
     public ScrollElement scrollElement;
 
-    public int curFirstIndex = 0;
+    public RectOffset padding;
+
+    public Action<ScrollElement, int, ScrollDataElement> onItemUpdate;
 
     protected List<ScrollDataElement> datas;
 
     protected bool centerChild = false;
 
     protected bool elemReuse = false;
+
+    protected RectTransform viewPort;
+
+    protected RectTransform container;
+
+    protected string prefabStoreKey;
    
     public virtual void SetData(IEnumerable incomeDatas)
     {
@@ -46,9 +56,23 @@ public abstract class ScrollListBase : MonoBehaviour
         if (elemReuse)
         {
             ScrollListElemReuse reuse = gameObject.AddComponent<ScrollListElemReuse>();
-            if (null != scroll)
-                scroll.onValueChanged.AddListener(reuse.CalculateReuse);
+            scroll.onValueChanged.AddListener(reuse.CalculateReuse);
         }
+    }
+
+    protected abstract bool CheckItemShow(ScrollDataElement dataElem);
+    
+    protected virtual void StorePrefab(GameObject elem)
+    {
+        if(null != elem)
+        {
+            PoolManager.DestoryObject(prefabStoreKey,elem);
+        }
+    }
+
+    protected virtual GameObject GetPrefab()
+    {
+        return PoolManager.GetObject(prefabStoreKey);
     }
 
     public abstract void ScrollTo(int index);
@@ -59,7 +83,13 @@ public abstract class ScrollListBase : MonoBehaviour
             ScrollTo(datas.IndexOf(elem));
     }
 
-    protected abstract void CalculateSize(int startIndex = 0);
+    protected virtual void CalculateSize(int startIndex = 0)
+    {
+        viewPort = transform.parent as RectTransform;
+        container = transform as RectTransform;
+        prefabStoreKey = scrollElement.GetInstanceID().ToString();
+        PoolManager.PushObject(prefabStoreKey,scrollElement.gameObject);
+    }
 
     /// <summary>
     /// 添加一条数据至数据表结尾处
